@@ -1,6 +1,5 @@
 FROM n8nio/n8n
 
-# Environment variables for n8n setup
 ENV N8N_BASIC_AUTH_ACTIVE=true
 ENV N8N_BASIC_AUTH_USER=admin@bot.io
 ENV N8N_BASIC_AUTH_PASSWORD=yourstrongpassword
@@ -14,12 +13,22 @@ ENV N8N_PORT=5678
 ENV EXECUTIONS_MODE=regular
 ENV DB_TYPE=sqlite
 
-# Install ffmpeg, yt-dlp, and Whisper
+# Switch to root to install packages
 USER root
 
-RUN apt-get update && \
-    apt-get install -y ffmpeg python3-pip git && \
-    pip install yt-dlp && \
-    pip install git+https://github.com/openai/whisper.git
+# Install system dependencies and Python tools
+RUN apk update && apk add --no-cache \
+    ffmpeg \
+    git \
+    py3-pip \
+    python3 \
+    build-base \
+    libffi-dev \
+    openssl-dev \
+    cargo \
+    && pip install --upgrade pip \
+    && pip install yt-dlp \
+    && pip install git+https://github.com/openai/whisper.git
 
+# Return to non-root user
 USER node
