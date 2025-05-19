@@ -15,3 +15,11 @@ ENV EXECUTIONS_MODE=regular
 
 # Use SQLite for simplicity
 ENV DB_TYPE=sqlite
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y ffmpeg python3-pip && \
+    pip install git+https://github.com/openai/whisper.git && \
+    pip install yt-dlp
+
+USER node
